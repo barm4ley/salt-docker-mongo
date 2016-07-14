@@ -7,7 +7,7 @@ VAGRANTFILE_API_VERSION = "2"
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.define :master do |master_config|
     master_config.vm.box = "debian/jessie64"
-    master_config.vm.host_name = 'saltmaster.local'
+    master_config.vm.host_name = 'saltmaster'
     master_config.vm.network "private_network", ip: "192.168.50.10"
     master_config.vm.synced_folder "saltstack/salt/", "/srv/salt"
     master_config.vm.synced_folder "saltstack/pillar/", "/srv/pillar"
@@ -19,8 +19,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       salt.minion_key = "saltstack/keys/master_minion.pem"
       salt.minion_pub = "saltstack/keys/master_minion.pub"
       salt.seed_master = {
-                          "minion1" => "saltstack/keys/minion1.pub",
-                          "minion2" => "saltstack/keys/minion2.pub"
+                          "mongo1" => "saltstack/keys/minion1.pub",
+                          "mongo2" => "saltstack/keys/minion2.pub"
                          }
 
       salt.install_type = "stable"
@@ -32,9 +32,9 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     end
   end
 
-  config.vm.define :minion1 do |minion_config|
+  config.vm.define :mongo1 do |minion_config|
     minion_config.vm.box = "debian/jessie64"
-    minion_config.vm.host_name = 'saltminion1.local'
+    minion_config.vm.host_name = 'mongo1'
     minion_config.vm.network "private_network", ip: "192.168.50.11"
 
     minion_config.vm.provision :salt do |salt|
@@ -48,24 +48,20 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     end
   end
 
-  #config.vm.define :minion2 do |minion_config|
-    #minion_config.vm.box = "debian/jessie64"
-    ## The following line can be uncommented to use Centos
-    ## instead of Ubuntu.
-    ## Comment out the above line as well
-    ##minion_config.vm.box = "chef/centos-6.5"
-    #minion_config.vm.host_name = 'saltminion2.local'
-    #minion_config.vm.network "private_network", ip: "192.168.50.12"
+  config.vm.define :mongo2 do |minion_config|
+    minion_config.vm.box = "debian/jessie64"
+    minion_config.vm.host_name = 'mongo2'
+    minion_config.vm.network "private_network", ip: "192.168.50.12"
 
-    #minion_config.vm.provision :salt do |salt|
-      #salt.minion_config = "saltstack/etc/minion2"
-      #salt.minion_key = "saltstack/keys/minion2.pem"
-      #salt.minion_pub = "saltstack/keys/minion2.pub"
-      #salt.install_type = "stable"
-      #salt.verbose = true
-      #salt.colorize = true
-      #salt.bootstrap_options = "-P -c /tmp"
-    #end
-  #end
+    minion_config.vm.provision :salt do |salt|
+      salt.minion_config = "saltstack/etc/minion2"
+      salt.minion_key = "saltstack/keys/minion2.pem"
+      salt.minion_pub = "saltstack/keys/minion2.pub"
+      salt.install_type = "stable"
+      salt.verbose = true
+      salt.colorize = true
+      salt.bootstrap_options = "-P -c /tmp"
+    end
+  end
 
 end
