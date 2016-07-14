@@ -1,9 +1,9 @@
 base:
   '*':
     - common
-  'G@roles:dockermongo':
+  'G@role:mongo':
     - pip
     - docker
     - mongo.docker
-    - slack.test
+    #- slack.test
 

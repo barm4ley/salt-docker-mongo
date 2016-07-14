@@ -3,5 +3,5 @@ base:
     - default
     - creds.slack
 
-  'G@roles:dockermongo':
+  'G@role:mongo':
     - creds.docker
