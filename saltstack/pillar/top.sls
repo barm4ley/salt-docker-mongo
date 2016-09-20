@@ -5,3 +5,6 @@ base:
 
   'G@role:mongo':
     - creds.docker
+
+  'consul':
+    - consul

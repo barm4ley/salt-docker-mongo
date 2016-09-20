@@ -6,4 +6,5 @@ base:
     - docker
     - mongo.docker
     #- slack.test
-
+  'consul':
+    - consul
