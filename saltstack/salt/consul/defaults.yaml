@@ -1,0 +1,18 @@
+consul:
+  version: 0.6.4
+  hash: abdf0e1856292468e2c9971420d73b805e93888e006c76324ae39416edcf0627
+
+  service: false
+  config:
+    server: false
+    bind_addr: 0.0.0.0
+    data_dir: /var/consul
+    ui: true
+    enable_debug: false
+    log_level: info
+    encrypt: ""
+    retry_join: []
+    retry_interval: 30s
+    datacenter: "main"
+  register: []
+  scripts: []
