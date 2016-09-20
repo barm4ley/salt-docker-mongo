@@ -20,7 +20,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       salt.minion_pub = "saltstack/keys/master_minion.pub"
       salt.seed_master = {
                           "mongo1" => "saltstack/keys/minion1.pub",
-                          "mongo2" => "saltstack/keys/minion2.pub"
+                          "consul" => "saltstack/keys/minion2.pub"
                          }
 
       salt.install_type = "stable"
@@ -48,9 +48,9 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     end
   end
 
-  config.vm.define :mongo2 do |minion_config|
+  config.vm.define :consul do |minion_config|
     minion_config.vm.box = "debian/jessie64"
-    minion_config.vm.host_name = 'mongo2'
+    minion_config.vm.host_name = 'consul'
     minion_config.vm.network "private_network", ip: "192.168.50.12"
 
     minion_config.vm.provision :salt do |salt|
