@@ -11,8 +11,8 @@ run_mongo_container:
     - hostname: mongo
     - tty: True
     - interactive: True
-    - ports:
-      - 27017/tcp
+    - port_bindings:
+      - 27017:27017/tcp
     #- binds:
     #  - /demo/web/site1:/usr/share/nginx/html:ro
     - dns:
@@ -34,10 +34,10 @@ copy_mongo_replset_setup_script:
     - source: salt://mongo/mongodb_replset_setup.py
     - makedirs: True
 
-run_mongo_replset_setup_script:
-  cmd.run:
-    - name: python /opt/apps/mongodb/mongodb_replset_setup.py
-    - user: root
-    - require:
-      - file: copy_mongo_replset_setup_script
-      - dockerng: run_mongo_container
+#run_mongo_replset_setup_script:
+  #cmd.run:
+    #- name: python /opt/apps/mongodb/mongodb_replset_setup.py
+    #- user: root
+    #- require:
+      #- file: copy_mongo_replset_setup_script
+      #- dockerng: run_mongo_container
