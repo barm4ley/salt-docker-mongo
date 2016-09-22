@@ -8,14 +8,12 @@ run_registrator_container:
   dockerng.running:
     - name: registrator
     - image: gliderlabs/registrator:latest
-    #- hostname: registrator
     - tty: False
     - interactive: False
     - network_mode: host
     - binds:
       - /var/run/docker.sock:/tmp/docker.sock
-      #- command: /bin/registrator consul://192.168.50.12:8500
-    - command: consul://192.168.50.12:8500
+    - command: consul://{{ pillar['service-discovery']['address'] }}:{{ pillar['service-discovery']['port'] }}
     - dns:
       - 8.8.8.8
       - 8.8.4.4
