@@ -3,7 +3,8 @@ base:
     - default
     - creds.slack
 
-  'G@role:mongo':
+  #'G@role:mongo':
+  'mongo*':
     - creds.docker
 
   'consul':
