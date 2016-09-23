@@ -9,12 +9,13 @@ run_mongo_container:
     - name: mongo
     - image: mongo:latest
     - hostname: mongo
-    - tty: True
-    - interactive: True
+    - tty: False
+    - interactive: False
     - port_bindings:
       - 27017:27017/tcp
-    #- binds:
-    #  - /demo/web/site1:/usr/share/nginx/html:ro
+    - environment:
+      - SERVICE_TAGS: {{ grains['nodename'] }}
+      - SERVICE_ID: {{ grains['nodename'] }}
     - dns:
       - 8.8.8.8
       - 8.8.4.4
