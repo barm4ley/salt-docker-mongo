@@ -10,10 +10,10 @@ run_registrator_container:
     - image: gliderlabs/registrator:latest
     - tty: False
     - interactive: False
-    - network_mode: host
+    - hostname: registrator
     - binds:
       - /var/run/docker.sock:/tmp/docker.sock
-    - command: consul://{{ pillar['service-discovery']['address'] }}:{{ pillar['service-discovery']['port'] }}
+    - command: -ip {{ grains['ip4_interfaces']['eth1'] }} consul://{{ pillar['service-discovery']['address'] }}:{{ pillar['service-discovery']['port'] }}
     - dns:
       - 8.8.8.8
       - 8.8.4.4
