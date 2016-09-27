@@ -1,5 +1,6 @@
 # Check pillar for special variable options
 {% set dbpath = salt['pillar.get']('mongo_options:dbpath', '/opt/mongodata') %}
+{% set logpath = salt['pillar.get']('mongo_options:logpath', '') %}
 {% set replset = salt['pillar.get']('mongo_options:replset', '') %}
 {% set auth = salt['pillar.get']('mongo_options:auth', '') %}
 
@@ -9,14 +10,17 @@ storage:
     journal:
         enabled: true
 
-processManagement:
-    fork: true
+#processManagement:
+#    fork: false
 
 
-systemlog:
-    quiet: false
-    path: /var/log/mongodb/mongod.log
+systemLog:
+    quiet: true
+    {% if logpath %}
+    destination: file
+    path: {{ logpath }}/mongod.log
     logAppend: true
+    {% endif %}
 
 net:
     http:

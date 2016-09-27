@@ -1,39 +1,80 @@
 {% set replset = salt['pillar.get']('mongo_options:replset', '') %}
+{% set dbpath = salt['pillar.get']('mongo_options:dbpath', '/data') %}
+{% set logpath = salt['pillar.get']('mongo_options:logpath', '') %}
+
+{% set mongo_image_name = salt['pillar.get']('mongo_image_options:name', 'mongo') %}
+{% set mongo_image_tag = salt['pillar.get']('mongo_image_options:tag', 'latest') %}
+
+{% set mongo_user = 999 %}
+{% set mongo_group = 999 %}
+
 
 /etc/mongodb.conf:
   file.managed:
     - source: salt://mongo/mongodb.conf.jinja
     - template: jinja
-    - user: root
-    - group: root
+    - user: {{ mongo_user }}
+    - group: {{ mongo_group }}
+
 
 {% if replset %}
 /etc/mongodb.key:
   file.managed:
     - source: salt://mongo/mongodb.key
     - template: jinja
-    - user: root
-    - group: root
-    - mode: 400
+    - user: {{ mongo_user }}
+    - group: {{ mongo_group }}
+    - mode: 600
     - require_in:
       - dockerng: run_mongo_container
 {% endif %}
 
+
+{% if logpath %}
+{{ logpath }}:
+  file.directory:
+    - user: {{ mongo_user }}
+    - group: {{ mongo_group }}
+    - require_in:
+      - dockerng: run_mongo_container
+{% endif %}
+
+
+{{ dbpath }}:
+  file.directory:
+    - user: {{ mongo_user }}
+    - group: {{ mongo_group }}
+    - require_in:
+      - dockerng: run_mongo_container
+
+
 download_mongo_image:
   dockerng.image_present:
-    - name: 'mongo:latest'
+    - name: {{ mongo_image_name }}:{{ mongo_image_tag }}
     - require:
       - pip: docker_python_api
+
 
 run_mongo_container:
   dockerng.running:
     - name: mongo
-    - image: mongo:latest
+    - image: {{ mongo_image_name }}:{{ mongo_image_tag }}
     - hostname: mongo
-    - tty: False
-    - interactive: False
+    #- tty: True
+    #- interactive: True
     - port_bindings:
       - 27017:27017/tcp
+    - binds:
+      - {{ dbpath }}:{{ dbpath }}
+      {% if logpath %}
+      - {{ logpath }}:{{ logpath }}
+      {% endif %}
+      - /var/log/mongodb:/var/log/mongodb
+      - /etc/mongodb.key:/etc/mongodb.key:ro
+      - /etc/mongodb.conf:/etc/mongodb.conf:ro
+      #- user: root
+    - cmd: --config /etc/mongodb.conf
+    #- cmd: /bin/bash
     - environment:
       - SERVICE_TAGS: {{ grains['nodename'] }}
       - SERVICE_ID: {{ grains['nodename'] }}
@@ -46,18 +87,18 @@ run_mongo_container:
     - watch:
       - file: /etc/mongodb.conf
 
-install_pymongo:
-  pip.installed:
-    - name: pymongo
-    - upgrade: True
-    - require:
-      - cmd: python_pip_update
+#install_pymongo:
+  #pip.installed:
+    #- name: pymongo
+    #- upgrade: True
+    #- require:
+      #- cmd: python_pip_update
 
-copy_mongo_replset_setup_script:
-  file.managed:
-    - name: /opt/apps/mongodb/mongodb_replset_setup.py
-    - source: salt://mongo/mongodb_replset_setup.py
-    - makedirs: True
+#copy_mongo_replset_setup_script:
+  #file.managed:
+    #- name: /opt/apps/mongodb/mongodb_replset_setup.py
+    #- source: salt://mongo/mongodb_replset_setup.py
+    #- makedirs: True
 
 #run_mongo_replset_setup_script:
   #cmd.run:
