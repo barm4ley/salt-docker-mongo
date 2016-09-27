@@ -1,0 +1,35 @@
+# Check pillar for special variable options
+{% set dbpath = salt['pillar.get']('mongo_options:dbpath', '/opt/mongodata') %}
+{% set replset = salt['pillar.get']('mongo_options:replset', '') %}
+{% set auth = salt['pillar.get']('mongo_options:auth', '') %}
+
+
+storage:
+    dbPath: {{ dbpath }}
+    journal:
+        enabled: true
+
+processManagement:
+    fork: true
+
+
+systemlog:
+    quiet: false
+    path: /var/log/mongodb/mongod.log
+    logAppend: true
+
+net:
+    http:
+        enabled: true
+        RESTInterfaceEnabled: true
+
+
+{% if replset %}
+replication:
+    replSetName: {{ replset }}
+{% endif %}
+
+
+security:
+    {% if replset %}keyFile: /etc/mongodb.key{% endif %}
+    authorization: {% if auth %} enabled {% else %} disabled {% endif %}

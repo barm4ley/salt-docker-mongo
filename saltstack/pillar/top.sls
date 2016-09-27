@@ -6,6 +6,7 @@ base:
   #'G@role:mongo':
   'mongo*':
     - service-discovery
+    - mongo
     - creds.docker
 
   'consul':

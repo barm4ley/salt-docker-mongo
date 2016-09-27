@@ -1,3 +1,24 @@
+{% set replset = salt['pillar.get']('mongo_options:replset', '') %}
+
+/etc/mongodb.conf:
+  file.managed:
+    - source: salt://mongo/mongodb.conf.jinja
+    - template: jinja
+    - user: root
+    - group: root
+
+{% if replset %}
+/etc/mongodb.key:
+  file.managed:
+    - source: salt://mongo/mongodb.key
+    - template: jinja
+    - user: root
+    - group: root
+    - mode: 400
+    - require_in:
+      - dockerng: run_mongo_container
+{% endif %}
+
 download_mongo_image:
   dockerng.image_present:
     - name: 'mongo:latest'
@@ -21,6 +42,9 @@ run_mongo_container:
       - 8.8.4.4
     - require:
       - dockerng: download_mongo_image
+      - file: /etc/mongodb.conf
+    - watch:
+      - file: /etc/mongodb.conf
 
 install_pymongo:
   pip.installed:
