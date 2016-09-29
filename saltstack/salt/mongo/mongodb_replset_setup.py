@@ -29,14 +29,7 @@ def init_replset(client, rs_name):
                  'arbiterOnly': False}
             ]
         }
-        print(cfg)
         client.admin.command("replSetInitiate", cfg)
-        print("ReplSet initiated:")
-        print(client.local.system.replset.find_one())
-    else:
-        print('ReplSet is already present:')
-        print(client.local.system.replset.find_one())
-    return client.local.system.replset.find_one()
 
 
 def join_replset(primary, secondary_addr, rs_name):
@@ -58,15 +51,9 @@ def join_replset(primary, secondary_addr, rs_name):
                   'priority': 1.0}
 
     cfg['version'] += 1
-
-
     cfg['members'].append(new_member)
 
-
-    print(cfg)
     primary.admin.command("replSetReconfig", cfg)
-    print("ReplSet reconfigured:")
-    print(primary.local.system.replset.find_one())
 
 
 def main():
@@ -78,8 +65,6 @@ def main():
     parser.add_argument('--primary',
                         default=None)
     args = parser.parse_args()
-
-    print(args)
 
     if not args.primary:
         client = pymongo.MongoClient(args.ip)
