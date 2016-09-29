@@ -1,12 +1,12 @@
 base:
   '*':
     - default
+    - service-discovery
     - creds.slack
 
   #'G@role:mongo':
   'mongo*':
     - registrator
-    - service-discovery
     - mongo
     - creds.docker
 

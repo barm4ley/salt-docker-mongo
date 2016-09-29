@@ -1,5 +1,6 @@
 {% from "registrator/map.jinja" import registrator_image_options as image with context %}
 {% from "map.jinja" import ip with context %}
+{% from "map.jinja" import sd with context %}
 
 download_registrator_image:
   dockerng.image_present:
@@ -14,7 +15,7 @@ run_registrator_container:
     - hostname: {{ image.container_name }}
     - binds:
       - /var/run/docker.sock:/tmp/docker.sock
-    - command: -ip {{ ip }} consul://{{ pillar['service-discovery']['address'] }}:{{ pillar['service-discovery']['port'] }}
+    - command: -ip {{ ip }} consul://{{ sd.address }}:{{ sd.port }}
     - dns:
       - 8.8.8.8
       - 8.8.4.4

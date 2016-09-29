@@ -1,3 +1,4 @@
 {# vi: set ft=jinja: #}
 
 {% set ip = salt['grains.get']('ip4_interfaces:eth1', ['127.0.0.1'])[0] %}
+{% set sd = salt['pillar.get']('service-discovery', '') %}
