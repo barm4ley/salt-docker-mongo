@@ -1,76 +1,68 @@
-{% set replset = salt['pillar.get']('mongo_options:replset', '') %}
-{% set dbpath = salt['pillar.get']('mongo_options:dbpath', '/data') %}
-{% set logpath = salt['pillar.get']('mongo_options:logpath', '') %}
-
-{% set mongo_image_name = salt['pillar.get']('mongo_image_options:name', 'mongo') %}
-{% set mongo_image_tag = salt['pillar.get']('mongo_image_options:tag', 'latest') %}
-
-{% set mongo_user = 999 %}
-{% set mongo_group = 999 %}
+{% from "mongo/map.jinja" import mongo_options as mongo with context %}
+{% from "mongo/map.jinja" import mongo_image_options as image with context %}
 
 
 /etc/mongodb.conf:
   file.managed:
     - source: salt://mongo/mongodb.conf.jinja
     - template: jinja
-    - user: {{ mongo_user }}
-    - group: {{ mongo_group }}
+    - user: {{ mongo.user }}
+    - group: {{ mongo.group }}
 
 
-{% if replset %}
+{% if mongo.replset %}
 /etc/mongodb.key:
   file.managed:
     - source: salt://mongo/mongodb.key
     - template: jinja
-    - user: {{ mongo_user }}
-    - group: {{ mongo_group }}
+    - user: {{ mongo.user }}
+    - group: {{ mongo.group }}
     - mode: 600
     - require_in:
       - dockerng: run_mongo_container
 {% endif %}
 
 
-{% if logpath %}
-{{ logpath }}:
+{% if mongo.logpath %}
+{{ mongo.logpath }}:
   file.directory:
-    - user: {{ mongo_user }}
-    - group: {{ mongo_group }}
+    - user: {{ mongo.user }}
+    - group: {{ mongo.group }}
     - require_in:
       - dockerng: run_mongo_container
 {% endif %}
 
 
-{{ dbpath }}:
+{{ mongo.dbpath }}:
   file.directory:
-    - user: {{ mongo_user }}
-    - group: {{ mongo_group }}
+    - user: {{ mongo.user }}
+    - group: {{ mongo.group }}
     - require_in:
       - dockerng: run_mongo_container
 
 
 download_mongo_image:
   dockerng.image_present:
-    - name: {{ mongo_image_name }}:{{ mongo_image_tag }}
+    - name: {{ image.name }}:{{ image.tag }}
     - require:
       - pip: docker_python_api
 
 
 run_mongo_container:
   dockerng.running:
-    - name: mongo
-    - image: {{ mongo_image_name }}:{{ mongo_image_tag }}
-    - hostname: mongo
+    - name: {{ image.name }}
+    - image: {{ image.name }}:{{ image.tag }}
+    - hostname: {{ image.name }}
     - port_bindings:
       - 27017:27017/tcp
     - binds:
-      - {{ dbpath }}:{{ dbpath }}
-      {% if logpath %}
-      - {{ logpath }}:{{ logpath }}
+      - {{ mongo.dbpath }}:{{ mongo.dbpath }}
+      {% if mongo.logpath %}
+      - {{ mongo.logpath }}:{{ mongo.logpath }}
       {% endif %}
       - /var/log/mongodb:/var/log/mongodb
       - /etc/mongodb.key:/etc/mongodb.key:ro
       - /etc/mongodb.conf:/etc/mongodb.conf:ro
-      #- user: root
     - cmd: --config /etc/mongodb.conf
     - environment:
       - SERVICE_TAGS: {{ grains['nodename'] }}

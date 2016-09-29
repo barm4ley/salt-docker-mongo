@@ -7,3 +7,7 @@ mongo_options:
   auth: false
   dbpath: /opt/mongodata
   logpath: /var/log/mongodb
+  
+  primary_addr: '192.168.50.21'
+  user: 999
+  group: 999
