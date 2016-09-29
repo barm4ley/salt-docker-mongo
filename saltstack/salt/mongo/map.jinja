@@ -1,0 +1,5 @@
+{# vi: set ft=jinja: #}
+
+{% set mongo_options = salt['pillar.get']('mongo_options', '') %}
+{% set mongo_image_options = salt['pillar.get']('mongo_image_options', '') %}
+
