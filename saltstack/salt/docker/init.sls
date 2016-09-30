@@ -86,6 +86,7 @@ docker_python_api:
   pip.installed:
     - name: docker-py
     - upgrade: True
+    - reload_modules: True
     - require:
       - service: start_docker_service
       - cmd: python_pip_update
