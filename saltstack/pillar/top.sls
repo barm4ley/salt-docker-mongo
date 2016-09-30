@@ -8,6 +8,7 @@ base:
   'mongo*':
     - registrator
     - mongo
+    - creds.mongo
     - creds.docker
 
   'consul':

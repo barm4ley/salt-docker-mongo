@@ -14,7 +14,6 @@
 /etc/mongodb.key:
   file.managed:
     - source: salt://mongo/mongodb.key
-    - template: jinja
     - user: {{ mongo.user }}
     - group: {{ mongo.group }}
     - mode: 600
