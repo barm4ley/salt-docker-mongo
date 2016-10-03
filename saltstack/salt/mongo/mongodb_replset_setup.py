@@ -4,6 +4,10 @@ import __future__
 import pymongo
 import argparse
 
+{% from "mongo/map.jinja" import mongo_creds as creds with context %}
+
+USERNAME = '{{ creds.superuser.name }}'
+PASSWORD = '{{ creds.superuser.password }}'
 
 def get_replset_members(client):
     return [node[0] + ':' + str(node[1]) for node in client.nodes]
@@ -56,6 +60,11 @@ def join_replset(primary, secondary_addr, rs_name):
     primary.admin.command("replSetReconfig", cfg)
 
 
+def authenticate(client):
+    client.admin.authenticate(USERNAME, PASSWORD)
+    client.local.authenticate(USERNAME, PASSWORD, source='admin')
+
+
 def main():
     parser = argparse.ArgumentParser(description='MongoDB replica set configurator')
     parser.add_argument('--ip',
@@ -68,9 +77,11 @@ def main():
 
     if not args.primary:
         client = pymongo.MongoClient(args.ip)
+        authenticate(client)
         init_replset(client, args.rs_name)
     else:
         client = pymongo.MongoClient(args.primary)
+        authenticate(client)
         join_replset(client, args.ip, args.rs_name)
 
 
