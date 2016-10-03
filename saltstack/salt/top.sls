@@ -6,7 +6,7 @@ base:
     - pip
     - docker
     - registrator
-    - mongo.docker
+    - mongo
     #- slack.test
   'consul':
     - consul

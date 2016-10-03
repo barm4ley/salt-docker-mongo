@@ -3,6 +3,7 @@ mongo_image_options:
   tag: latest
 
 mongo_options:
+  #replset: 
   replset: CrAnReplSet
   auth: false
   dbpath: /opt/mongodata
