@@ -6,6 +6,7 @@ copy_mongo_replset_setup_script:
   file.managed:
     - name: /opt/apps/mongodb/mongodb_replset_setup.py
     - source: salt://mongo/mongodb_replset_setup.py
+    - template: jinja
     - makedirs: True
 
 
