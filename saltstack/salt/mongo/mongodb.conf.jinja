@@ -1,24 +1,17 @@
 # Check pillar for special variable options
-{% set dbpath = salt['pillar.get']('mongo_options:dbpath', '/opt/mongodata') %}
-{% set logpath = salt['pillar.get']('mongo_options:logpath', '') %}
-{% set replset = salt['pillar.get']('mongo_options:replset', '') %}
-{% set auth = salt['pillar.get']('mongo_options:auth', '') %}
+{% from "mongo/map.jinja" import mongo_options as mongo with context %}
 
 
 storage:
-    dbPath: {{ dbpath }}
+    dbPath: {{ mongo.dbpath }}
     journal:
         enabled: true
 
-#processManagement:
-#    fork: false
-
-
 systemLog:
     quiet: true
-    {% if logpath %}
+    {% if mongo.logpath %}
     destination: file
-    path: {{ logpath }}/mongod.log
+    path: {{ mongo.logpath }}/mongod.log
     logAppend: true
     {% endif %}
 
@@ -26,14 +19,3 @@ net:
     http:
         enabled: true
         RESTInterfaceEnabled: true
-
-
-{% if replset %}
-replication:
-    replSetName: {{ replset }}
-{% endif %}
-
-
-#security:
-    #{% if replset %}keyFile: /etc/mongodb.key{% endif %}
-    #authorization: {% if auth %} enabled {% else %} disabled {% endif %}
