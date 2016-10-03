@@ -11,7 +11,11 @@ PASSWORD = '{{ creds.superuser.password }}'
 client = pymongo.MongoClient()
 
 try:
-    client.admin.add_user(USERNAME, PASSWORD, roles=[{'role':'userAdminAnyDatabase', 'db':'admin'}])
+    client.admin.add_user(USERNAME, PASSWORD, roles=[
+        {'role':'userAdminAnyDatabase', 'db':'admin'},
+        {'role':'clusterAdmin', 'db':'admin'},
+        {'role':'readWrite', 'db':'local'}
+    ])
     client.admin.authenticate(USERNAME, PASSWORD)
 except Exception as e:
     print(e)
