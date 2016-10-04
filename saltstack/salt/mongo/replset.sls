@@ -2,19 +2,25 @@
 {% from "map.jinja" import ip with context %}
 
 
-copy_mongo_replset_setup_script:
+copy_setup_replset:
   file.managed:
-    - name: /opt/apps/mongodb/mongodb_replset_setup.py
-    - source: salt://mongo/mongodb_replset_setup.py
+    - name: /opt/apps/mongodb/setup_replset.py
+    - source: salt://mongo/setup_replset.py
     - template: jinja
     - makedirs: True
 
 
-run_mongo_replset_setup_script:
+run_setup_replset:
   cmd.run:
-    - name: python /opt/apps/mongodb/mongodb_replset_setup.py --ip {{ ip }} --rs-name {{ mongo.replset }} {% if ip != mongo.primary_addr %} --primary {{ mongo.primary_addr }} {% endif %}
+    - name: python /opt/apps/mongodb/setup_replset.py --ip {{ ip }} --rs-name {{ mongo.replset }} {% if ip != mongo.primary_addr %} --primary {{ mongo.primary_addr }} {% endif %}
     - user: root
     - require:
-      - file: copy_mongo_replset_setup_script
+      - file: copy_setup_replset
     - watch:
-      - file: copy_mongo_replset_setup_script
+      - file: copy_setup_replset
+
+remove_setup_replset:
+  file.absent:
+    - name: /opt/apps/mongodb/setup_replset.py
+    - require:
+      - cmd: run_setup_replset
