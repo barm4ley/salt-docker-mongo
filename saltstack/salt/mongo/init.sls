@@ -8,7 +8,7 @@ include:
 copy_mongo_config:
   file.managed:
     - name: /etc/mongodb.conf
-    - source: salt://mongo/mongodb.conf.jinja
+    - source: salt://mongo/files/mongodb.conf.jinja
     - template: jinja
     - user: {{ mongo.user }}
     - group: {{ mongo.group }}
@@ -17,7 +17,7 @@ copy_mongo_config:
 {% if mongo.replset %}
 /etc/mongodb.key:
   file.managed:
-    - source: salt://mongo/mongodb.key
+    - source: salt://mongo/files/mongodb.key
     - user: {{ mongo.user }}
     - group: {{ mongo.group }}
     - mode: 600

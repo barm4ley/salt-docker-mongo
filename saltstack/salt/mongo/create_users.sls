@@ -25,7 +25,6 @@ run_mongo_config_container:
       - {{ mongo.logpath }}:{{ mongo.logpath }}
       {% endif %}
       - /var/log/mongodb:/var/log/mongodb
-      #- /etc/mongodb.key:/etc/mongodb.key:ro
       - /etc/mongodb.conf:/etc/mongodb.conf:ro
     - cmd: --config /etc/mongodb.conf
     - environment:
@@ -42,15 +41,15 @@ run_mongo_config_container:
 
 copy_create_superuser:
   file.managed:
-    - name: /opt/apps/mongodb/create_superuser.py
-    - source: salt://mongo/create_superuser.py
+    - name: {{ mongo.script_path }}/create_superuser.py
+    - source: salt://mongo/files/create_superuser.py
     - template: jinja
     - makedirs: True
 
 
 run_create_superuser:
   cmd.run:
-    - name: python /opt/apps/mongodb/create_superuser.py
+    - name: python {{ mongo.script_path }}/create_superuser.py
     - user: root
     - require:
       - dockerng: run_mongo_config_container
@@ -61,7 +60,7 @@ run_create_superuser:
 
 remove_create_superuser:
   file.absent:
-    - name: /opt/apps/mongodb/create_superuser.py
+    - name: {{ mongo.script_path }}/create_superuser.py
     - require:
       - cmd: run_create_superuser
 
