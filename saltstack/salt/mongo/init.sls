@@ -22,7 +22,6 @@ copy_mongo_config:
     - group: {{ mongo.group }}
     - mode: 600
     - require_in:
-      #- dockerng: run_mongo_container
       - dockerng: copy_mongo_config
 {% endif %}
 
@@ -34,7 +33,6 @@ create_log_dir:
     - user: {{ mongo.user }}
     - group: {{ mongo.group }}
     - require_in:
-      #- dockerng: run_mongo_container
       - dockerng: copy_mongo_config
 {% endif %}
 
@@ -45,7 +43,6 @@ create_mongo_db_dir:
     - user: {{ mongo.user }}
     - group: {{ mongo.group }}
     - require_in:
-      #- dockerng: run_mongo_container
       - dockerng: copy_mongo_config
 
 
