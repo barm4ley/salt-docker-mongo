@@ -1,0 +1,11 @@
+{# vi: set ft=jinja: #}
+
+{% from "map.jinja" import ip with context%}
+{% import_yaml "consul_docker/defaults.yaml" as defaults %}
+
+{% set consul = salt['pillar.get']('consul', default=defaults.consul, merge=True) %}
+
+{% do consul.config.update({'retry_join': consul.config.retry_join or []}) %}
+{% do consul.config.update({'recursors': consul.config.recursors or salt.grains.get("dns:nameservers") }) %}
+{% do consul.config.update({'bind_addr': consul.config.bind_addr or ip }) %}
+{% do consul.config.update({'client_addr': consul.config.bind_addr or ip }) %}
