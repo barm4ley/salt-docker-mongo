@@ -1,6 +1,0 @@
-{# vi: set ft=jinja: #}
-
-{% from "consul_docker/map.jinja" import consul with context %}
-{
-  "services": {{ consul.register | json }}
-}
