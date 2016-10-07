@@ -1,7 +1,7 @@
 {# vi: set ft=jinja: #}
 
 {% from "map.jinja" import ip with context%}
-{% import_yaml "consul_docker/defaults.yaml" as defaults %}
+{% import_yaml "consul/defaults.yaml" as defaults %}
 
 {% set consul = salt['pillar.get']('consul', default=defaults.consul, merge=True) %}
 

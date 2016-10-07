@@ -1,8 +1,8 @@
-{% from "consul_docker/map.jinja" import consul with context %}
+{% from "consul/map.jinja" import consul with context %}
 
 consul_config:
   file.managed:
-    - source: salt://consul_docker/files/config.json
+    - source: salt://consul/files/config.json
     - name: {{ consul.config_dir }}/config.json
     - template: jinja
     - makedirs: True
@@ -25,7 +25,7 @@ consul_script_install_{{ loop.index }}:
 
 consul_script_config:
   file.managed:
-    - source: salt://consul_docker/files/services.json
+    - source: salt://consul/files/services.json
     - name: {{ consul.config_dir }}/services.json
     - template: jinja
     - makedirs: True
