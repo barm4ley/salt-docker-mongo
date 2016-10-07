@@ -1,4 +1,4 @@
-{% from "mongo/map.jinja" import mongo_options as mongo with context %}
+{% from "mongo/map.jinja" import mongo with context %}
 {% from "map.jinja" import ip with context %}
 
 
@@ -12,7 +12,7 @@ copy_setup_replset:
 
 run_setup_replset:
   cmd.run:
-    - name: python {{ mongo.script_path }}/setup_replset.py --ip {{ ip }} --rs-name {{ mongo.replset }} {% if ip != mongo.primary_addr %} --primary {{ mongo.primary_addr }} {% endif %}
+    - name: python {{ mongo.script_path }}/setup_replset.py --ip {{ ip }} --rs-name {{ mongo.config.replset }} {% if ip != mongo.primary_addr %} --primary {{ mongo.primary_addr }} {% endif %}
     - user: root
     - require:
       - file: copy_setup_replset

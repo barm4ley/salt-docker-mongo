@@ -1,5 +1,4 @@
-{% from "mongo/map.jinja" import mongo_options as mongo with context %}
-{% from "mongo/map.jinja" import mongo_image_options as image with context %}
+{% from "mongo/map.jinja" import mongo with context %}
 
 include:
   - pip
@@ -14,7 +13,7 @@ copy_mongo_config:
     - group: {{ mongo.group }}
 
 
-{% if mongo.replset %}
+{% if mongo.config.replset %}
 /etc/mongodb.key:
   file.managed:
     - source: salt://mongo/files/mongodb.key
@@ -26,10 +25,10 @@ copy_mongo_config:
 {% endif %}
 
 
-{% if mongo.logpath %}
+{% if mongo.config.logpath %}
 create_log_dir:
   file.directory:
-    - name: {{ mongo.logpath }}
+    - name: {{ mongo.config.logpath }}
     - user: {{ mongo.user }}
     - group: {{ mongo.group }}
     - require_in:
@@ -39,7 +38,7 @@ create_log_dir:
 
 create_mongo_db_dir:
   file.directory:
-    - name: {{ mongo.dbpath }}
+    - name: {{ mongo.config.dbpath }}
     - user: {{ mongo.user }}
     - group: {{ mongo.group }}
     - require_in:
@@ -48,7 +47,7 @@ create_mongo_db_dir:
 
 download_mongo_image:
   dockerng.image_present:
-    - name: {{ image.name }}:{{ image.tag }}
+    - name: {{ mongo.image.name }}:{{ mongo.image.tag }}
     - require:
       - pip: docker_python_api
 

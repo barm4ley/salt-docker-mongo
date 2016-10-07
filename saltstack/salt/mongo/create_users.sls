@@ -1,6 +1,4 @@
-{% from "mongo/map.jinja" import mongo_options as mongo with context %}
-{% from "mongo/map.jinja" import mongo_image_options as image with context %}
-{% from "mongo/map.jinja" import mongo_creds as creds with context %}
+{% from "mongo/map.jinja" import mongo with context %}
 {% from "map.jinja" import ip with context %}
 
 ##{{ show_full_context() }}
@@ -14,15 +12,15 @@ include:
 
 run_mongo_config_container:
   dockerng.running:
-    - name: {{ image.name }}
-    - image: {{ image.name }}:{{ image.tag }}
-    - hostname: {{ image.name }}
+    - name: {{ mongo.image.name }}
+    - image: {{ mongo.image.name }}:{{ mongo.image.tag }}
+    - hostname: {{ mongo.image.name }}
     - port_bindings:
       - 27017:27017/tcp
     - binds:
-      - {{ mongo.dbpath }}:{{ mongo.dbpath }}
-      {% if mongo.logpath %}
-      - {{ mongo.logpath }}:{{ mongo.logpath }}
+      - {{ mongo.config.dbpath }}:{{ mongo.config.dbpath }}
+      {% if mongo.config.logpath %}
+      - {{ mongo.config.logpath }}:{{ mongo.config.logpath }}
       {% endif %}
       - /var/log/mongodb:/var/log/mongodb
       - /etc/mongodb.conf:/etc/mongodb.conf:ro
@@ -65,11 +63,11 @@ remove_create_superuser:
       - cmd: run_create_superuser
 
 
-{% for name, params in creds.users.iteritems() %}
+{% for name, params in mongo.creds.users.iteritems() %}
 user_{{ name }}:
   mongodb_user.present:
-    - user: {{ creds.superuser.name }}
-    - password: {{ creds.superuser.password }}
+    - user: {{ mongo.creds.superuser.name }}
+    - password: {{ mongo.creds.superuser.password }}
     - name: {{ name }}
     - passwd: {{ params.password }}
     - database: {{ params.database }}
@@ -81,16 +79,16 @@ user_{{ name }}:
 stop_mongo_config:
   dockerng.stopped:
     - names:
-      - {{ image.name }}
+      - {{ mongo.image.name }}
     - require:
-      {% for name, params in creds.users.iteritems() %}
+      {% for name, params in mongo.creds.users.iteritems() %}
       - mongodb_user: user_{{ name }}
       {% endfor %}
 
 remove_mongo_config:
   dockerng.absent:
     - names:
-      - {{ image.name }}
+      - {{ mongo.image.name }}
     - require:
       - dockerng: stop_mongo_config
 

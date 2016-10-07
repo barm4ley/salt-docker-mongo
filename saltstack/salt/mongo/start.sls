@@ -1,6 +1,4 @@
-{% from "mongo/map.jinja" import mongo_options as mongo with context %}
-{% from "mongo/map.jinja" import mongo_image_options as image with context %}
-
+{% from "mongo/map.jinja" import mongo with context %}
 
 include:
   - mongo
@@ -9,25 +7,25 @@ include:
 
 run_mongo_container:
   dockerng.running:
-    - name: {{ image.name }}
-    - image: {{ image.name }}:{{ image.tag }}
-    - hostname: {{ image.name }}
+    - name: {{ mongo.image.name }}
+    - image: {{ mongo.image.name }}:{{ mongo.image.tag }}
+    - hostname: {{ mongo.image.name }}
     - port_bindings:
       - 27017:27017/tcp
     - binds:
-      - {{ mongo.dbpath }}:{{ mongo.dbpath }}
+      - {{ mongo.config.dbpath }}:{{ mongo.config.dbpath }}
       - /etc/mongodb.conf:/etc/mongodb.conf:ro
       - /var/log/mongodb:/var/log/mongodb
 
-      {% if mongo.logpath %}
-      - {{ mongo.logpath }}:{{ mongo.logpath }}
+      {% if mongo.config.logpath %}
+      - {{ mongo.config.logpath }}:{{ mongo.config.logpath }}
       {% endif %}
 
-      {% if mongo.replset %}
+      {% if mongo.config.replset %}
       - /etc/mongodb.key:/etc/mongodb.key:ro
       {% endif %}
 
-    - cmd: --config /etc/mongodb.conf {% if mongo.replset %} --keyFile /etc/mongodb.key --replSet {{ mongo.replset }} {% endif %}
+    - cmd: --config /etc/mongodb.conf {% if mongo.config.replset %} --keyFile /etc/mongodb.key --replSet {{ mongo.config.replset }} {% endif %}
     - environment:
       - SERVICE_TAGS: {{ grains['nodename'] }}
       - SERVICE_ID: {{ grains['nodename'] }}

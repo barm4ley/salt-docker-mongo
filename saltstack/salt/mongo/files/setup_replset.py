@@ -4,10 +4,10 @@ import __future__
 import pymongo
 import argparse
 
-{% from "mongo/map.jinja" import mongo_creds as creds with context %}
+{% from "mongo/map.jinja" import mongo with context %}
 
-USERNAME = '{{ creds.superuser.name }}'
-PASSWORD = '{{ creds.superuser.password }}'
+USERNAME = '{{ mongo.creds.superuser.name }}'
+PASSWORD = '{{ mongo.creds.superuser.password }}'
 
 def get_replset_members(client):
     return [node[0] + ':' + str(node[1]) for node in client.nodes]

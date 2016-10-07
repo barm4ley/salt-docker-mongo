@@ -1,17 +1,17 @@
 # Check pillar for special variable options
-{% from "mongo/map.jinja" import mongo_options as mongo with context %}
+{% from "mongo/map.jinja" import mongo with context %}
 
 
 storage:
-    dbPath: {{ mongo.dbpath }}
+    dbPath: {{ mongo.config.dbpath }}
     journal:
         enabled: true
 
 systemLog:
     quiet: true
-    {% if mongo.logpath %}
+    {% if mongo.config.logpath %}
     destination: file
-    path: {{ mongo.logpath }}/mongod.log
+    path: {{ mongo.config.logpath }}/mongod.log
     logAppend: true
     {% endif %}
 

@@ -1,12 +1,12 @@
 #!/usr/bin/env python
 
-{% from "mongo/map.jinja" import mongo_creds as creds with context %}
+{% from "mongo/map.jinja" import mongo with context %}
 
 import __future__
 import pymongo
 
-USERNAME = '{{ creds.superuser.name }}'
-PASSWORD = '{{ creds.superuser.password }}'
+USERNAME = '{{ mongo.creds.superuser.name }}'
+PASSWORD = '{{ mongo.creds.superuser.password }}'
 
 client = pymongo.MongoClient()
 
