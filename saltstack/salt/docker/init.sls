@@ -19,6 +19,9 @@
 {% set lsb_dist = salt['grains.get']('os', '')|lower %}
 {% set dist_version = salt['grains.get']('osmajorrelease', '') %}
 
+include:
+  - pip
+
 
 #If it's RedHat/CentOS 7 make sure firewalld is disabled.
 # Docker will not start

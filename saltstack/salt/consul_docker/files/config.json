@@ -1,0 +1,4 @@
+{# vi: set ft=jinja: #}
+
+{% from "consul_docker/map.jinja" import consul with context %}
+{{ consul.config | json}}

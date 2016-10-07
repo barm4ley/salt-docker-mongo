@@ -1,12 +1,12 @@
 base:
   '*':
     - common
-  #'G@role:mongo':
-  'mongo*':
     - pip
     - docker
+  #'G@role:mongo':
+  'mongo*':
     - registrator
     - mongo
     #- slack.test
   'consul':
-    - consul
+    - consul_docker
