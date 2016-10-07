@@ -3,10 +3,8 @@
 include:
   - docker
   - pip
-  #- consul.clear
 
 {% if salt.dockerng.exists(consul.image.name) %}
-
 
 {% if salt.dockerng.state(consul.image.name) == 'running' %}
 stop_consul_container:

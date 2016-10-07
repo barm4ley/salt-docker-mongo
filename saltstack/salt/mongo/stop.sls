@@ -1,19 +1,24 @@
 {% from "mongo/map.jinja" import mongo_options as mongo with context %}
 {% from "mongo/map.jinja" import mongo_image_options as image with context %}
 
-include:
-  - mongo.start
+#include:
+  #- docker
+  #- pip
 
-stop_mongo:
+{% if salt.dockerng.exists(image.name) %}
+
+{% if salt.dockerng.state(image.name) == 'running' %}
+stop_mongo_container:
   dockerng.stopped:
     - names:
       - {{ image.name }}
-    - require:
-      - dockerng: run_mongo_container
+    - require_in:
+      - dockerng: remove_mongo_container
+{% endif %}
 
-remove_mongo:
+remove_mongo_container:
   dockerng.absent:
     - names:
       - {{ image.name }}
-    - require:
-      - dockerng: stop_mongo
+
+{% endif %}

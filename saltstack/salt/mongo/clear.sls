@@ -7,14 +7,17 @@ include:
 remove_mongo_db_dir:
   file.absent:
     - name: {{ mongo.dbpath }}
-    - require:
-      - dockerng: remove_mongo
 
 
 {% if mongo.logpath %}
 remove_log_dir:
   file.absent:
     - name: {{ mongo.logpath }}
+    - require_in:
+      - file: remove_mongo_db_dir
+    {% if salt.dockerng.exists(image.name) %}
     - require:
-      - dockerng: remove_mongo
+      - dockerng: remove_mongo_container
+    {% endif %}
+
 {% endif %}
