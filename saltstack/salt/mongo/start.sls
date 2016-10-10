@@ -1,3 +1,4 @@
+{% from "map.jinja" import sd with context %}
 {% from "mongo/map.jinja" import mongo with context %}
 
 include:
@@ -27,13 +28,12 @@ run_mongo_container:
 
     - cmd: --config /etc/mongodb.conf {% if mongo.config.replset %} --keyFile /etc/mongodb.key --replSet {{ mongo.config.replset }} {% endif %}
     - environment:
-      - SERVICE_TAGS: {{ grains['nodename'] }}
-      - SERVICE_ID: {{ grains['nodename'] }}
+      - SERVICE_TAGS: {{ sd.service_name }}
+      - SERVICE_ID: {{ sd.service_name }}
     - dns:
       - 8.8.8.8
       - 8.8.4.4
     - require:
       - dockerng: download_mongo_image
-      - file: copy_mongo_config
     - watch:
       - file: copy_mongo_config

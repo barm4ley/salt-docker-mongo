@@ -14,8 +14,6 @@ run_setup_replset:
   cmd.run:
     - name: python {{ mongo.script_path }}/setup_replset.py --ip {{ ip }} --rs-name {{ mongo.config.replset }} {% if ip != mongo.primary_addr %} --primary {{ mongo.primary_addr }} {% endif %}
     - user: root
-    - require:
-      - file: copy_setup_replset
     - watch:
       - file: copy_setup_replset
 

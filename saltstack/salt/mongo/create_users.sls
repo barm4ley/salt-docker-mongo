@@ -32,7 +32,6 @@ run_mongo_config_container:
       - 8.8.4.4
     - require:
       - dockerng: download_mongo_image
-      - file: copy_mongo_config
     - watch:
       - file: copy_mongo_config
 
@@ -51,7 +50,6 @@ run_create_superuser:
     - user: root
     - require:
       - dockerng: run_mongo_config_container
-      - file: copy_create_superuser
     - watch:
       - file: copy_create_superuser
 

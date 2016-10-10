@@ -19,12 +19,11 @@ run_consul_container:
     - binds:
       - {{ consul.config_dir }}:/consul/config
       - {{ consul.data_dir }}:/consul/data:rw
-
+    - environment:
+      - SERVICE_IGNORE: 'true'
     - cmd: agent -server -bind=127.0.0.1 -client=0.0.0.0
     - require:
       - dockerng: download_consul_image
-      - file: consul_config
-      - file: consul_script_config
     - watch:
       - file: consul_config
       - file: consul_script_config
