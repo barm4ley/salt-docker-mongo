@@ -3,13 +3,17 @@ base:
     - default
     - service-discovery
     - creds.slack
+    - creds.docker
+    - registrator
 
   #'G@role:mongo':
   'mongo*':
-    - registrator
     - mongo
     - creds.mongo
-    - creds.docker
 
   'consul':
     - consul
+
+  'cran':
+    - creds.cran
+    - cran
