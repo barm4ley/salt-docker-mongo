@@ -1,0 +1,20 @@
+{# vi: set ft=jinja: #}
+
+{% macro stop_container(name) %}
+{% if salt.dockerng.exists(name) %}
+
+{% if salt.dockerng.state(name) == 'running' %}
+stop_{{ name }}_container:
+  dockerng.stopped:
+    - names:
+      - {{ name }}
+    - require_in:
+      - dockerng: remove_{{ name }}_container
+{% endif %}
+
+remove_{{ name }}_container:
+  dockerng.absent:
+    - names:
+      - {{ name }}
+{% endif %}
+{% endmacro %}
