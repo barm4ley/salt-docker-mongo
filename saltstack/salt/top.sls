@@ -3,6 +3,7 @@ base:
     - common
     - pip
     - docker
+
   #'G@role:mongo':
   'mongo*':
     - registrator
@@ -11,3 +12,8 @@ base:
   'consul':
     - consul
     - consul.start
+
+  'cran':
+    - registrator
+    - cran
+    - cran.start
