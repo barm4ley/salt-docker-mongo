@@ -26,7 +26,7 @@ run_mongo_container:
       - /etc/mongodb.key:/etc/mongodb.key:ro
       {% endif %}
 
-    - cmd: --config /etc/mongodb.conf {% if mongo.config.replset %} --keyFile /etc/mongodb.key --replSet {{ mongo.config.replset }} {% endif %}
+    - cmd: --config /etc/mongodb.conf {% if mongo.config.replset %} {% if mongo.config.auth %} --keyFile /etc/mongodb.key {% endif %} --replSet {{ mongo.config.replset }} {% endif %}
     - environment:
       - SERVICE_TAGS: {{ sd.service_name }}
       - SERVICE_ID: {{ sd.service_name }}

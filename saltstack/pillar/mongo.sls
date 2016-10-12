@@ -7,6 +7,7 @@ mongo:
   script_path: /opt/apps/mongodb
 
   config:
+    auth: False
     replset: CrAnReplSet
     dbpath: /opt/mongodata
     logpath: /var/log/mongodb
