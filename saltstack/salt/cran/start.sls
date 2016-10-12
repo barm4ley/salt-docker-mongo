@@ -18,17 +18,18 @@ run_cran_container:
     - binds:
       - {{ cran.config_dir }}:{{ cran.config_dir }}
     - dns:
+      - {{ sd.address }}
       - 8.8.8.8
 
     - environment:
       {% for name, val in cran.env.iteritems() %}
-      - {{ name }}: {{ val|string }}
+      - {{ name }}: "{{ val }}"
       {% endfor %}
 
       - SERVICE_TAGS: {{ sd.service_name }}
       - SERVICE_ID: {{ sd.service_name }}
 
-    - cmd: "/usr/local/bin/gunicorn cran.wsgi:application --config= {{ cran.config_dir }}/gunicorn.conf"
+    - cmd: /usr/local/bin/gunicorn cran.wsgi:application --config {{ cran.config_dir }}/gunicorn.conf
     - require:
       - dockerng: download_cran_image
     - watch:
@@ -41,12 +42,12 @@ run_cran_fetcher_updater_container:
     - image: {{ cran.image.name }}:{{ cran.image.tag }}
     - hostname: cran-prod.fetcher-updater
     - restart_policy: always
+    - dns:
+      - {{ sd.address }}
+      - 8.8.8.8
     - environment:
       {% for name, val in cran.env.iteritems() %}
-      - {{ name }}: {{ val|string }}
+      - {{ name }}: "{{ val }}"
       {% endfor %}
-    - cmd: "python -m cran.manage sync_with_fogbugz"
+    - cmd: python -m cran.manage sync_with_fogbugz
 
-#test:
-  #cmd.run:
-    #- name: echo {% for name, val in cran.env.iteritems() %} {{ name }}: {{ val }} '\n' {% endfor %}
