@@ -13,7 +13,7 @@ base:
     - consul
     - consul.start
 
-  'cran':
+  'cran*':
     - registrator
     - cran
     - cran.start

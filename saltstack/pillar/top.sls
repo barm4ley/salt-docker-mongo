@@ -14,6 +14,6 @@ base:
   'consul':
     - consul
 
-  'cran':
+  'cran*':
     - creds.cran
     - cran

@@ -23,11 +23,13 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       salt.minion_key = "saltstack/keys/master_minion.pem"
       salt.minion_pub = "saltstack/keys/master_minion.pub"
       salt.seed_master = {
-                          "consul" => "saltstack/keys/minion1.pub",
-                          "mongo1" => "saltstack/keys/minion2.pub",
-                          "mongo2" => "saltstack/keys/minion3.pub",
-                          "mongo3" => "saltstack/keys/minion4.pub",
-                          "cran"   => "saltstack/keys/minion5.pub"
+                          "consul" => "saltstack/keys/consul.pub",
+                          "mongo1" => "saltstack/keys/mongo1.pub",
+                          "mongo2" => "saltstack/keys/mongo2.pub",
+                          "mongo3" => "saltstack/keys/mongo3.pub",
+                          "cran1"  => "saltstack/keys/cran1.pub",
+                          "cran2"  => "saltstack/keys/cran2.pub",
+                          "cran3"  => "saltstack/keys/cran3.pub"
                          }
 
       salt.install_type = "stable"
@@ -45,9 +47,9 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     minion_config.vm.network "private_network", ip: "192.168.50.12"
 
     minion_config.vm.provision :salt do |salt|
-      salt.minion_config = "saltstack/etc/minion1"
-      salt.minion_key = "saltstack/keys/minion1.pem"
-      salt.minion_pub = "saltstack/keys/minion1.pub"
+      salt.minion_config = "saltstack/etc/consul"
+      salt.minion_key = "saltstack/keys/consul.pem"
+      salt.minion_pub = "saltstack/keys/consul.pub"
       salt.install_type = "stable"
       salt.verbose = true
       salt.colorize = true
@@ -61,9 +63,9 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     minion_config.vm.network "private_network", ip: "192.168.50.21"
 
     minion_config.vm.provision :salt do |salt|
-      salt.minion_config = "saltstack/etc/minion2"
-      salt.minion_key = "saltstack/keys/minion2.pem"
-      salt.minion_pub = "saltstack/keys/minion2.pub"
+      salt.minion_config = "saltstack/etc/mongo1"
+      salt.minion_key = "saltstack/keys/mongo1.pem"
+      salt.minion_pub = "saltstack/keys/mongo1.pub"
       salt.install_type = "stable"
       salt.verbose = true
       salt.colorize = true
@@ -77,9 +79,9 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     minion_config.vm.network "private_network", ip: "192.168.50.22"
 
     minion_config.vm.provision :salt do |salt|
-      salt.minion_config = "saltstack/etc/minion3"
-      salt.minion_key = "saltstack/keys/minion3.pem"
-      salt.minion_pub = "saltstack/keys/minion3.pub"
+      salt.minion_config = "saltstack/etc/mongo2"
+      salt.minion_key = "saltstack/keys/mongo2.pem"
+      salt.minion_pub = "saltstack/keys/mongo2.pub"
       salt.install_type = "stable"
       salt.verbose = true
       salt.colorize = true
@@ -93,9 +95,9 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     minion_config.vm.network "private_network", ip: "192.168.50.23"
 
     minion_config.vm.provision :salt do |salt|
-      salt.minion_config = "saltstack/etc/minion4"
-      salt.minion_key = "saltstack/keys/minion4.pem"
-      salt.minion_pub = "saltstack/keys/minion4.pub"
+      salt.minion_config = "saltstack/etc/mongo3"
+      salt.minion_key = "saltstack/keys/mongo3.pem"
+      salt.minion_pub = "saltstack/keys/mongo3.pub"
       salt.install_type = "stable"
       salt.verbose = true
       salt.colorize = true
@@ -103,15 +105,47 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     end
   end
 
-  config.vm.define :cran do |minion_config|
+  config.vm.define :cran1 do |minion_config|
     minion_config.vm.box = "debian/jessie64"
     minion_config.vm.host_name = 'cran'
     minion_config.vm.network "private_network", ip: "192.168.50.31"
 
     minion_config.vm.provision :salt do |salt|
-      salt.minion_config = "saltstack/etc/minion5"
-      salt.minion_key = "saltstack/keys/minion5.pem"
-      salt.minion_pub = "saltstack/keys/minion5.pub"
+      salt.minion_config = "saltstack/etc/cran1"
+      salt.minion_key = "saltstack/keys/cran1.pem"
+      salt.minion_pub = "saltstack/keys/cran1.pub"
+      salt.install_type = "stable"
+      salt.verbose = true
+      salt.colorize = true
+      salt.bootstrap_options = "-P -c /tmp"
+    end
+  end
+
+  config.vm.define :cran2 do |minion_config|
+    minion_config.vm.box = "debian/jessie64"
+    minion_config.vm.host_name = 'cran'
+    minion_config.vm.network "private_network", ip: "192.168.50.32"
+
+    minion_config.vm.provision :salt do |salt|
+      salt.minion_config = "saltstack/etc/cran2"
+      salt.minion_key = "saltstack/keys/cran2.pem"
+      salt.minion_pub = "saltstack/keys/cran2.pub"
+      salt.install_type = "stable"
+      salt.verbose = true
+      salt.colorize = true
+      salt.bootstrap_options = "-P -c /tmp"
+    end
+  end
+
+  config.vm.define :cran3 do |minion_config|
+    minion_config.vm.box = "debian/jessie64"
+    minion_config.vm.host_name = 'cran'
+    minion_config.vm.network "private_network", ip: "192.168.50.33"
+
+    minion_config.vm.provision :salt do |salt|
+      salt.minion_config = "saltstack/etc/cran3"
+      salt.minion_key = "saltstack/keys/cran3.pem"
+      salt.minion_pub = "saltstack/keys/cran3.pub"
       salt.install_type = "stable"
       salt.verbose = true
       salt.colorize = true
