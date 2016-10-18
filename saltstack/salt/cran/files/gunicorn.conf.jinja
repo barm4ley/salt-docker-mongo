@@ -1,5 +1,6 @@
 """gunicorn WSGI server configuration"""
 
+{% from "cran/map.jinja" import cran with context %}
 
 from multiprocessing import cpu_count
 from os import getenv
@@ -11,7 +12,7 @@ def gunicorn_workers():
     return cpu_count() + 1
 
 
-bind = '0.0.0.0:80'
+bind = '{{ cran.bind_address }}:{{ cran.bind_port }}'
 name = 'cran'
 daemon = False
 log_level = 'info'

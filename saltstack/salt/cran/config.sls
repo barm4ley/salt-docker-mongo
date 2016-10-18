@@ -2,7 +2,7 @@
 
 gunicorn_config:
   file.managed:
-    - source: salt://cran/files/gunicorn.conf
+    - source: salt://cran/files/gunicorn.conf.jinja
     - name: {{ cran.config_dir }}/gunicorn.conf
     - template: jinja
     - makedirs: True

@@ -1,6 +1,9 @@
 cran:
   config_dir: /config/cran
 
+  bind_address: 0.0.0.0
+  bind_port: 80
+
   image:
     name: maximunity/cran
     tag: latest
