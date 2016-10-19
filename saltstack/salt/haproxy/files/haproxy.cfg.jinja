@@ -1,0 +1,42 @@
+{# vi: set ft=jinja: #}
+
+{% from "cran/map.jinja" import cran with context %}
+{% from "haproxy/map.jinja" import haproxy with context %}
+
+{% set containers = salt.mine.get_docker(interfaces='eth1') %}
+
+global
+    maxconn 2000
+    debug
+    log /dev/log local0 debug
+
+defaults
+    # make sure log-format is on a single line
+    log global
+    log-format {"type":"haproxy","timestamp":%Ts,"http_status":%ST,"http_request":"%r","remote_addr":"%ci","bytes_read":%B,"upstream_addr":"%si","backend_name":"%b","retries":%rc,"bytes_uploaded":%U,"upstream_response_time":"%Tr","upstream_connect_time":"%Tc","session_duration":"%Tt","termination_state":"%ts"}
+
+    option httplog
+    option dontlognull
+    mode http
+    option redispatch
+    timeout connect 5000
+    timeout client  10000
+    timeout server  10000
+
+frontend http-in
+    log /dev/log local0 debug
+    bind {{ haproxy.bind_address }}:{{ haproxy.bind_port }}
+    use_backend cran_svr
+
+backend cran_svr
+    log /dev/log local0 debug
+    mode http
+    balance roundrobin
+    option httpclose
+    option forwardfor
+{% for key, val in containers.iteritems() if 'cran:' in key -%}
+{% set addrs = val['ipv4'][cran.bind_port] %}
+{% for addr in addrs %}
+    server cran{{ loop.index }} {{ addr }} check
+{% endfor -%}
+{% endfor -%}

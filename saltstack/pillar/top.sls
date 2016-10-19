@@ -17,3 +17,4 @@ base:
   'cran*':
     - creds.cran
     - cran
+    - haproxy

@@ -17,3 +17,4 @@ base:
     - registrator
     - cran
     - cran.start
+    - haproxy

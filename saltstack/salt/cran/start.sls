@@ -14,7 +14,7 @@ run_cran_container:
     - hostname: cran-prod.cran
     - restart_policy: always
     - port_bindings:
-      - 80:80
+      - {{ cran.bind_port }}:{{ cran.bind_port }}
     - binds:
       - {{ cran.config_dir }}:{{ cran.config_dir }}
     - dns:
