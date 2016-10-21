@@ -11,7 +11,7 @@ run_cran_container:
   dockerng.running:
     - name: cran
     - image: {{ cran.image.name }}:{{ cran.image.tag }}
-    - hostname: cran-prod.cran
+    - hostname: cran-{{ saltenv }}.cran
     - restart_policy: always
     - port_bindings:
       - {{ cran.bind_port }}:{{ cran.bind_port }}
@@ -26,8 +26,8 @@ run_cran_container:
       - {{ name }}: "{{ val }}"
       {% endfor %}
 
-      - SERVICE_TAGS: {{ sd.service_name }}
-      - SERVICE_ID: {{ sd.service_name }}
+      - SERVICE_TAGS: {{ sd.service_name }}-web
+      - SERVICE_ID: {{ sd.service_name }}-web
 
     - cmd: /usr/local/bin/gunicorn cran.wsgi:application --config {{ cran.config_dir }}/gunicorn.conf
     - require:
@@ -36,11 +36,23 @@ run_cran_container:
       - file: gunicorn_config
 
 
+send_cran_started_event:
+  event.send:
+    - name: docker/cran/{{ saltenv }}/started
+    #- data:
+      #saltenv: {{ saltenv }}
+    #- with_env: True
+    - order: last
+    - onchanges:
+      - dockerng: run_cran_container
+
+
+
 run_cran_fetcher_updater_container:
   dockerng.running:
     - name: fetcher_updater
     - image: {{ cran.image.name }}:{{ cran.image.tag }}
-    - hostname: cran-prod.fetcher-updater
+    - hostname: cran-{{ saltenv }}.fetcher-updater
     - restart_policy: always
     - dns:
       - {{ sd.address }}
