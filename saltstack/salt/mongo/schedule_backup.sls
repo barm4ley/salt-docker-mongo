@@ -6,4 +6,5 @@ schedule_mongo_backup_job:
       - mongo.make_backup
     - when: 1:00am
     #- seconds: 120
+    - maxrunning: 1
 
