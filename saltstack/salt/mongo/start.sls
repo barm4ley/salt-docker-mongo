@@ -37,3 +37,12 @@ run_mongo_container:
       - dockerng: download_mongo_image
     - watch:
       - file: copy_mongo_config
+
+
+run_mongo_container_slack_message:
+  slack.post_message:
+    - name: slack-message
+    - channel: '#{{ pillar['slack']['channel'] }}'
+    - from_name: {{ pillar['slack']['from_name'] }}
+    - api_key: {{ pillar['slack']['api_key'] }}
+    - message: 'MongoDB is (re)started on {{ grains['fqdn'] }}'

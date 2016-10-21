@@ -41,6 +41,7 @@ create_mongo_db_dir:
     - name: {{ mongo.config.dbpath }}
     - user: {{ mongo.user }}
     - group: {{ mongo.group }}
+    - makedirs: True
     - require_in:
       - dockerng: copy_mongo_config
 
