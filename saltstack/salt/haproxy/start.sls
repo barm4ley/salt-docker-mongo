@@ -10,7 +10,7 @@ include:
 
 run_haproxy_container:
   dockerng.running:
-    - name: haproxy
+    - name: {{ haproxy.container_name }}
     - image: {{ haproxy.image.name }}:{{ haproxy.image.tag }}
     - hostname: cran-prod.haproxy
     - restart_policy: always
@@ -24,8 +24,8 @@ run_haproxy_container:
       - 8.8.8.8
 
     - environment:
-      - SERVICE_TAGS: {{ sd.service_name }}-haproxy
-      - SERVICE_ID: {{ sd.service_name }}-haproxy
+      - SERVICE_TAGS: {{ sd.service_name }}-lb
+      - SERVICE_ID: {{ sd.service_name }}-lb
       - HAPROXY_CONFIG: {{ haproxy.config_dir }}/haproxy.cfg
 
     #- cmd: haproxy -f {{ haproxy.config_dir }}/haproxy.cfg

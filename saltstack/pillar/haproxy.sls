@@ -7,3 +7,4 @@ haproxy:
   image:
     name: million12/haproxy
     tag: latest
+    container_name: haproxy
