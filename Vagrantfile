@@ -30,7 +30,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
                           "mongo3" => "saltstack/keys/mongo3.pub",
                           "cran1"  => "saltstack/keys/cran1.pub",
                           "cran2"  => "saltstack/keys/cran2.pub",
-                          "cran3"  => "saltstack/keys/cran3.pub"
+                          "cran3"  => "saltstack/keys/cran3.pub",
+                          "cran-stg"  => "saltstack/keys/cran-stg.pub"
                          }
 
       salt.install_type = "stable"
@@ -147,6 +148,22 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       salt.minion_config = "saltstack/etc/cran3"
       salt.minion_key = "saltstack/keys/cran3.pem"
       salt.minion_pub = "saltstack/keys/cran3.pub"
+      salt.install_type = "stable"
+      salt.verbose = true
+      salt.colorize = true
+      salt.bootstrap_options = "-P -c /tmp"
+    end
+  end
+
+  config.vm.define :cranstg do |minion_config|
+    minion_config.vm.box = "debian/jessie64"
+    minion_config.vm.host_name = 'cran-stg'
+    minion_config.vm.network "private_network", ip: "192.168.50.41"
+
+    minion_config.vm.provision :salt do |salt|
+      salt.minion_config = "saltstack/etc/cran-stg"
+      salt.minion_key = "saltstack/keys/cran-stg.pem"
+      salt.minion_pub = "saltstack/keys/cran-stg.pub"
       salt.install_type = "stable"
       salt.verbose = true
       salt.colorize = true
