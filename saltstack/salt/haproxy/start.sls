@@ -10,7 +10,7 @@ include:
 
 run_haproxy_container:
   dockerng.running:
-    - name: {{ haproxy.container_name }}
+    - name: {{ haproxy.image.container_name }}
     - image: {{ haproxy.image.name }}:{{ haproxy.image.tag }}
     - hostname: cran-prod.haproxy
     - restart_policy: always
