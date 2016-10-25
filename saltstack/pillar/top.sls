@@ -6,15 +6,25 @@ base:
     - creds.docker
     - registrator
 
-  #'G@role:mongo':
-  'mongo*':
+  'G@env:prod and G@roles:cran-mongo':
+    - match: compound
     - mongo
     - creds.mongo
 
-  'consul':
+  'G@env:prod and G@roles:toolsmith-sd':
+    - match: compound
     - consul
 
-  'cran*':
+  'G@env:prod and ( G@roles:cran-web or G@roles:cran-fetcher-updater )':
+    - match: compound
     - creds.cran
     - cran
+
+  'G@env:stg and ( G@roles:cran-web or G@roles:cran-fetcher-updater )':
+    - match: compound
+    - creds.cran
+    - cran
+
+  'G@env:prod and G@roles:cran-lb':
+    - match: compound
     - haproxy
