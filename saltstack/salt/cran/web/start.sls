@@ -1,5 +1,6 @@
 {% from "map.jinja" import sd with context %}
 {% from "map.jinja" import env with context %}
+{% from "map.jinja" import slack with context %}
 {% from "cran/map.jinja" import cran with context %}
 
 include:
@@ -31,6 +32,8 @@ run_cran_container:
       {% if env == 'prod' %}
       - SERVICE_TAGS: {{ sd.service_name }}-web
       - SERVICE_ID: {{ sd.service_name }}-web
+      {% else %}
+      - SERVICE_IGNORE: 'true'
       {% endif %}
 
     - cmd: /usr/local/bin/gunicorn cran.wsgi:application --config {{ cran.config_dir }}/gunicorn.conf
@@ -46,3 +49,14 @@ send_cran_started_event:
     - order: last
     - onchanges:
       - dockerng: run_cran_container
+
+{% if slack.notifications_enabled %}
+run_cran_container_slack_message:
+  slack.post_message:
+    - channel: '#{{ slack.channel }}'
+    - from_name: {{ slack.from_name }}
+    - api_key: {{ slack.api_key }}
+    - message: 'CrAn Web (env: `{{ env }}`) is (re)started on `{{ grains['fqdn'] }}`'
+    - onchanges:
+      - dockerng: run_cran_container
+{% endif %}

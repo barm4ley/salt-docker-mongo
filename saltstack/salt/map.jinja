@@ -3,5 +3,7 @@
 {% set ip = salt.grains.get('ip4_interfaces:eth1', ['127.0.0.1'])[0] %}
 {% set env = salt.grains.get('env', 'dev') %}
 
-{% set sd = salt.pillar.get('service-discovery', '') %}
+{% set slack = salt.pillar.get('slack') %}
+
+{% set sd = salt.pillar.get('service-discovery') %}
 {% do sd.update({'service_name': salt.grains.get('host')}) %}

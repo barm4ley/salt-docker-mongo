@@ -8,9 +8,10 @@ base:
     - match: grain
     - registrator
 
-  'roles: mongo':
+  'roles:cran-mongo':
     - match: grain
-    - mongo
+    - mongo.create_users
+    - mongo.start
 
   'roles:toolsmith-sd':
     - match: grain

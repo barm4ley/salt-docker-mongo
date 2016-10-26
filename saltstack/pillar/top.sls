@@ -2,6 +2,7 @@ base:
   '*':
     - default
     - service-discovery
+    - slack
     - creds.slack
     - creds.docker
     - registrator

@@ -1,4 +1,6 @@
 {% from "map.jinja" import sd with context %}
+{% from "map.jinja" import env with context %}
+{% from "map.jinja" import slack with context %}
 {% from "mongo/map.jinja" import mongo with context %}
 
 include:
@@ -8,9 +10,9 @@ include:
 
 run_mongo_container:
   dockerng.running:
-    - name: {{ mongo.image.name }}
+    - name: {{ mongo.image.container_name }}
     - image: {{ mongo.image.name }}:{{ mongo.image.tag }}
-    - hostname: {{ mongo.image.name }}
+    - hostname: {{ mongo.image.container_name }}-{{ env }}
     - port_bindings:
       - 27017:27017/tcp
     - binds:
@@ -27,9 +29,15 @@ run_mongo_container:
       {% endif %}
 
     - cmd: --config /etc/mongodb.conf {% if mongo.config.replset %} {% if mongo.config.auth %} --keyFile /etc/mongodb.key {% endif %} --replSet {{ mongo.config.replset }} {% endif %}
+
     - environment:
+      {% if env == "prod" %}
       - SERVICE_TAGS: {{ sd.service_name }}
       - SERVICE_ID: {{ sd.service_name }}
+      {% else %}
+      - SERVICE_IGNORE: 'true'
+      {% endif %}
+
     - dns:
       - 8.8.8.8
       - 8.8.4.4
@@ -39,10 +47,13 @@ run_mongo_container:
       - file: copy_mongo_config
 
 
+{% if slack.notifications_enabled %}
 run_mongo_container_slack_message:
   slack.post_message:
-    - name: slack-message
-    - channel: '#{{ pillar['slack']['channel'] }}'
-    - from_name: {{ pillar['slack']['from_name'] }}
-    - api_key: {{ pillar['slack']['api_key'] }}
-    - message: 'MongoDB is (re)started on {{ grains['fqdn'] }}'
+    - channel: '#{{ slack.channel }}'
+    - from_name: {{ slack.from_name }}
+    - api_key: {{ slack.api_key }}
+    - message: 'MongoDB (env: `{{ env }}`) is (re)started on `{{ grains['fqdn'] }}`'
+    - onchanges:
+      - dockerng: run_mongo_container
+{% endif %}
