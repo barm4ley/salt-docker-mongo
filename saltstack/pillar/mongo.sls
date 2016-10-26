@@ -21,3 +21,4 @@ mongo:
   image:
     name: mongo
     tag: latest
+    container_name: mongo

@@ -7,8 +7,9 @@ base:
     - creds.docker
     - registrator
 
-  'G@env:prod and G@roles:cran-mongo':
-    - match: compound
+  #'G@env:prod and G@roles:cran-mongo':
+  'roles:cran-mongo':
+    - match: grain
     - mongo
     - creds.mongo
 
@@ -26,6 +27,7 @@ base:
     - creds.cran
     - cran
 
-  'G@env:prod and G@roles:cran-lb':
-    - match: compound
+  #'G@env:prod and G@roles:cran-lb':
+  'roles:cran-lb':
+    - match: grain
     - haproxy
