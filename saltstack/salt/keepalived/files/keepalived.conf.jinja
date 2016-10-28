@@ -1,0 +1,16 @@
+{% from "keepalived/map.jinja" import keepalived with context %}
+
+vrrp_instance {{ keepalived.config.instance }} {
+    state {{ keepalived.config.state }}
+    interface {{ keepalived.config.interface }}
+    virtual_router_id {{ keepalived.config.virtual_router_id }}
+    priority {{ range(100, 200)|random }}
+    advert_int {{ keepalived.config.advert_int }}
+    authentication {
+        auth_type PASS
+        auth_pass {{ keepalived.config.auth.pass }}
+    }
+    virtual_ipaddress {
+        {{ keepalived.config.virtual_ip.address }}/{{ keepalived.config.virtual_ip.mask }} label {{ keepalived.config.interface }}:100
+    }
+}

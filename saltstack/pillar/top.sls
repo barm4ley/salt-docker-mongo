@@ -7,11 +7,10 @@ base:
     - creds.docker
     - registrator
 
-  #'G@env:prod and G@roles:cran-mongo':
   'roles:cran-mongo':
     - match: grain
-    - mongo
     - creds.mongo
+    - mongo
 
   'G@env:prod and G@roles:toolsmith-sd':
     - match: compound
@@ -27,7 +26,11 @@ base:
     - creds.cran
     - cran
 
-  #'G@env:prod and G@roles:cran-lb':
   'roles:cran-lb':
     - match: grain
     - haproxy
+
+  'roles:cran-keepalived':
+    - match: grain
+    - creds.keepalived
+    - keepalived

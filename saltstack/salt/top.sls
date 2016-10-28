@@ -28,3 +28,7 @@ base:
   'roles:cran-lb':
     - match: grain
     - haproxy.start
+
+  'roles:cran-keepalived':
+    - match: grain
+    - keepalived.start

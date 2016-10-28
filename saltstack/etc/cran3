@@ -69,6 +69,7 @@ grains:
     - cran-web
     - cran-fetcher-updater
     - cran-lb
+    - cran-keepalived
 
 #grains:
 #  roles:
