@@ -77,7 +77,7 @@ user_{{ name }}:
 stop_mongo_config:
   dockerng.stopped:
     - names:
-      - {{ mongo.image.name }}
+      - {{ mongo.image.container_name }}
     - require:
       {% for name, params in mongo.creds.users.iteritems() %}
       - mongodb_user: user_{{ name }}
@@ -86,7 +86,7 @@ stop_mongo_config:
 remove_mongo_config:
   dockerng.absent:
     - names:
-      - {{ mongo.image.name }}
+      - {{ mongo.image.container_name }}
     - require:
       - dockerng: stop_mongo_config
 
